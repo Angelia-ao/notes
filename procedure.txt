@@ -1,0 +1,67 @@
+不后悔，莫过于做好三件事：一是知道如何选择；二是明白如何坚持；三是懂得如何珍惜。
+CALL select_info('18698572586');
+
+18616735960
+CALL select_info('18698572586');
+CALL select_info('18616735960');
+//35516
+DROP PROCEDURE IF EXISTS `select_info`;
+CREATE PROCEDURE select_info(IN in_phone VARCHAR(20))  
+BEGIN   
+	DECLARE uuid INT(11);   
+	DECLARE umy_code VARCHAR(20);   
+	DECLARE is_cheat VARCHAR(20);
+	DECLARE is_black VARCHAR(20);
+  DECLARE is_from_black VARCHAR(20);
+	DECLARE is_from_cheat VARCHAR(20);
+	DECLARE ufrom_code VARCHAR(20);
+	DECLARE ufrom_uid INT(11);
+	DECLARE ufrom_phone VARCHAR(20);
+	SELECT uid INTO uuid FROM gzb_user_account WHERE phone = in_phone LIMIT 1;
+	IF uuid is not NULL THEN
+		#user cheat
+		SELECT phone INTO is_cheat FROM gzb_user_cheat WHERE phone = in_phone;
+		IF is_cheat IS NOT NULL THEN
+			SET is_cheat = 'YES';
+		ELSE
+			SET is_cheat = 'NO';
+		END IF;
+		SELECT my_code,from_code,from_uid INTO umy_code,ufrom_code,ufrom_uid  FROM gzb_user_redpacket_code WHERE uid = uuid;
+		SELECT credit_status INTO is_black FROM gzb_user_info WHERE uid = uuid;
+		#from user cheat
+		IF ufrom_code IS NOT NULL THEN
+			SELECT phone INTO ufrom_phone FROM gzb_user_account WHERE  uid = ufrom_uid;
+			SELECT phone INTO is_from_cheat FROM gzb_user_cheat WHERE phone = ufrom_phone;
+			SELECT credit_status INTO is_from_black FROM gzb_user_info WHERE uid = ufrom_uid;
+			IF is_from_cheat IS NOT NULL THEN
+				SET is_from_cheat = 'YES';
+			ELSE
+				SET is_from_cheat = 'NO';
+			END IF;
+		
+			IF is_from_black = 3 THEN
+				SET is_from_black = 'YES';
+			ELSE
+				SET is_from_black = 'NO';
+			END IF;
+		END IF;
+		IF is_black = 3 THEN
+			SET is_black = 'YES';
+		ELSE
+			SET is_black = 'NO';
+		END IF;
+
+		SELECT 	in_phone  ,
+						uuid      ,
+						umy_code,
+						is_cheat,
+						is_black   ,
+						ufrom_phone,
+						ufrom_uid,
+						ufrom_code,
+						is_from_cheat,
+						is_from_black;
+	ELSE
+		SELECT 'UID Not Found';
+	END IF;
+END;

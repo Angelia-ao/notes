@@ -1,0 +1,379 @@
+16:46 2015/7/22
+bat备份localtest
+[bat git ]
+读取文件内容【ini】
+文件、文件夹存在
+替换文件
+fc /a D:\wnmp\www\gzb\app\routes.php D:\wnmp\www\gzb_local\app\routes.php
+
+fc /a D:\wnmp\www\gzb\app\controllers\GeneralTestController.php D:\wnmp\www\gzb_local\app\controllers\GeneralTestController.php
+
+
+D:\wnmp\www\gzb\app\controllers
+
+8:33 2015/6/30
+
+name
+identity
+
+
+1435200314446841
+1435200314446841
+
+ 
+
+9:08 2015/6/29
+
+
+
+
+
+
+
+
+
+
+
+
+9:07 2015/6/29
+授权登陆
+模拟登陆
+
+crm
+
+文件加密
+
+
+9:09 2015/6/25
+
+数据渠道
+验证码
+项目分析
+
+
+
+
+
+9:31 2015/6/24
+area 
+cup parent id
+type level
+name 
+
+
+
+10:50 2015/6/23
+
+diff a b  means something do not exists in a but exists in b
+
+morning : From Hash => List => Set =>SortedSet
+
+
+16:33 2015/6/22
+看看REDIS文档
+安装Cygwin64
+编译Redis-2.8.3
+PHP Explorer And Project Explorer
+Redis传参方式['by'=>[]]
+
+
+8:42 2015/6/17
+关注python 和 go
+
+
+
+13:52 2015/6/12
+
+composer dumpautoload
+artisan migrate:make create-badmin-table
+artisan migrate --env=local
+
+
+17:08 2015/6/11
+autoload_classmap
+autoload_files
+autoload_namspaces
+autoload_psr4
+的区别？
+
+monolog
+
+
+14:43 2015/6/11
+
+LV DB ROUTE FILTER VALIDATOR  LOG FILESYATEM
+
+错误返回码
+
+
+15:47 2015/7/3
+I:请求多个接口，请求地址I_want_A_B_C 。。。 参数{SHAREDATA:{data} A:{},B:{}},return {A:{ok},B:{I Need ...}}
+
+
+10:01 2015/6/11
+I idea Q question W way N note notice
+I: 流程配置：将业务逻辑分成若干原子操作，通过流程配置灵活的的更改流程
+   后期考虑将配置置于网页，即可方便转换逻辑
+Q：参数传递方式；需要统一的参数和输出
+Q：麻烦，不适用于小型项目，
+Q：逻辑配置的可执行方案，如何简便配置
+i: 考虑分库建表（如有需要）；原子逻辑合成分子逻辑，支持分子配置
+W：
+1、要配置逻辑，先要知道有些什么样的逻辑要配置
+	
+2、思考逻辑沟通方式，结合逻辑种类，分析项目可行性|注释@|依赖注入
+3、注册逻辑
+4、生成逻辑缓存，即成型的逻辑（参数沟通？）
+
+I：曾今的Validator。Validate 顺序，分叉，就是逻辑，操作不做验证，调用前以验证调度操作
+
+N：项目开发问题：测试不便（真实数据、验证严格）、逻辑更改、用户失败原因不明、流程提示（什么错了、要先如何，需明确）
+N：记录验证失败原因，返还给用户
+N：操作可查，尤其是敏感操作，Log的用处，文件存储、DB存储、考虑一个账户一个文件，日志的注入时机和植入方式
+N：测试数据，如何方便测试，账户生成/删除Procedure，测试信息一键生成/清除，问题数据检测和删除
+N：逻辑Validator，From Validator
+N：Record Suddenly Idea 
+N：有想法，有行动，那就实现点什么
+
+Pendant 挂件
+
+程序流、经过一个产生新数据
+
+注册逻辑码，标注逻辑功能
+返回逻辑链，逻辑码，指明逻辑流向
+返回码注册，结合返回码
+思考输入输出，外部逻辑调度
+
+http://git.renrenfenqi.com/renrenfenqi/guozhongbao_api.git
+
+
+16:52 2015/6/10
+今天主要学习了CI的form_validation,看了看自己写的data_validate,又看了看laravel5.1
+的Validator，结果出现了filter_val，cmd php execution 和 php://，最后来了
+Reflection，了解了ReflectionClass|function等等。当然这也没什么卵用
+
+
+16:46 2015/6/9
+今天玩了php 的c语言dll扩展（extension），了解到php的版本有vc6,9,11，TS,NTS
+先是缺失config32.h
+cscript /nologo configure.js --with-php-build="../win32" --without-libxml  --disable-odbc
+生成，再是msdev linvo.dsp /MAKE "linvo - Win32 Release_TS" 生成dll
+之后；extension=php_linvo.dll，php -m 发现版本不匹配，下载对应版本后完成
+自定义c扩展。然而，这并没有什么卵用。。。
+
+cscript /nologo configure.js --with-php-build="../win32" --without-libxml  --disable-odbc
+
+msdev linvo.dsp /MAKE "linvo - Win32 Release_TS"
+
+msdev curl.dsp /MAKE "curl - Win32 Release_TS"
+
+msdev linvo.dsp /MAKE "linvo - Win32 Release_TS"
+
+
+
+
+
+16:12 2015/6/3
+11:56 2015/6/3
+
+修改金额计算
+14331482404888
+
+分期数类型转换，新增订单红包显示修复
+
+
+
+
+11:27 2015/6/2
+
+1.未找到分期价格提示
+
+6	小米4	6	6	3|6|9|12	0|10|20|30|40|50|60|70|80|90|100	<p><img src="/ueditor/php/upload/image/20140818/1408351165362409.png" style="" title="1408351165362409.png"/></p><p><img src="/ueditor/php/upload/image/20140818/1408351165529093.png" style="" title="1408351165529093.png"/></p><p><img src="/ueditor/php/upload/image/20140818/1408351165886544.png" style="" title="1408351165886544.png"/></p><p><img src="/ueditor/php/upload/image/20140818/1408351165225969.png" style="" title="1408351165225969.png"/></p><p><img src="/ueditor/php/upload/image/20140818/1408351165269121.png" style="" title="1408351165269121.png"/></p><p><img src="/ueditor/php/upload/image/20140818/1408351165635475.png" style="" title="1408351165635475.png"/></p><p><img src="/ueditor/php/upload/image/20140818/1408351166807060.png" style="" title="1408351166807060.png"/></p><p><img src="/ueditor/php/upload/image/20140818/1408351166429446.png" style="" title="1408351166429446.png"/></p><p><br/></p><p><br/></p>		2002	2002	小米4来袭哦~发烧级硬件配置，超高性价	0	1	1	2014-08-18 05:50:42	2015-05-20 15:17:54	
+772	大米	6	6	3|6|9|12	0|10|20|30|40|50|60|70|80|90|100			1400	1400	看看	1	1	1	2015-06-01 15:51:01	2015-06-01 15:53:42	
+
+{"message":"test:\u66f4\u65b0\u6210\u529f","status":200,"ddd":{"is_job":1,"custom_id":"5","uid":"884","goods_id":"26","periods":"3|2099.00","first_pay":0,"client":"\u672a\u77e5","status":"10","red_id":"0","code_id":"","city_manager_id":0,"city_manager_name":"","angel_id":0,"info":"","business_no":"14332915556166"}}
+
+{
+    "message": "test:更新成功",
+    "status": 200,
+    "ddd": {
+        "is_job": 1,
+        "custom_id": "5",
+        "uid": "884",
+        "goods_id": "26",
+        "periods": "3|2099.00",
+        "first_pay": 0,
+        "client": "未知",
+        "status": "10",
+        "red_id": "0",
+        "code_id": "",
+        "city_manager_id": 0,
+        "city_manager_name": "",
+        "angel_id": 0,
+        "info": "",
+        "business_no": "14332915556166"
+    }
+}
+
+   {
+        "is_job": 1,
+        "custom_id": "5",
+        "uid": "884",
+        "goods_id": "26",
+        "periods": "3|2099.00",
+        "first_pay": 0,
+        "client": "未知",
+        "status": "10",
+        "red_id": "0",
+        "code_id": "",
+        "city_manager_id": 0,
+        "city_manager_name": "",
+        "angel_id": 0,
+        "info": "",
+        "business_no": "14332915556166"
+    }
+
+   {
+        "is_job": 1,
+        "custom_id": "5",
+        "uid": "884",
+        "goods_id": "7701",
+        "periods": "3|2025.77",
+        "first_pay": 0,
+        "client": "未知",
+        "status": "10",
+        "red_id": "0",
+        "code_id": "",
+        "city_manager_id": 0,
+        "city_manager_name": "",
+        "angel_id": 0,
+        "info": "",
+        "business_no": "14332915556166"
+    }
+
+
+{
+    "message": "test:更新成功",
+    "status": 200,
+    "ddd": {
+        "is_job": 1,
+        "custom_id": "5",
+        "uid": "884",
+        "goods_id": "7701",
+        "periods": "3|2025.77",
+        "first_pay": 0,
+        "client": "未知",
+        "status": "10",
+        "red_id": "0",
+        "code_id": "",
+        "city_manager_id": 0,
+        "city_manager_name": "",
+        "angel_id": 0,
+        "info": "",
+        "business_no": "14332915556166"
+    }
+}
+
+8:38 2015/5/29
+
+1.订单系统》订单列表》取消订单标识红色
+2.订单系统》订单修改申请》修改成功后关闭窗口
+3.单条数据不加page，查询订单不加cid
+4.订单处理状态为【客服_已联系 已分配】时，通过学校ID获取城市经理的校园经理
+5.订单取消后不可再修改
+
+
+
+8:41 2015/6/1
+到底改成什么样子
+
+http://test.crm.renrenfenqi.com/index.php?d=order&c=addor&m=dopost&key=addOrders
+
+
+单条数据不加page，查询订单不加cid，已分配订单不进行再分配
+订单系统》订单修改申请》修改成功后关闭窗口
+订单系统》订单列表》分派》已分配订单不可再分配
+订单系统》订单列表》取消订单标识红色
+
+14:42 2015/5/28
+data-d="<?php if(isset($order)){
+			echo $angel_name['angel_name'].'|'.$order['angel_id'];
+		}?>"
+[U] crm 订单系统》订单修改申请》修改成功后关闭窗口
+[U] crm 订单系统》订单列表》分派》已分配订单不可再分配
+[U] crm 订单系统》订单列表》取消订单标识红色
+
+					if($this->input->get('jyl')){
+						exit(json_encode($order ['data']) );
+					}
+?cid=5&page=1
+git reset --hard 5d1b8b028b0135cbe80d014751190acb344aaaf1
+
+10:00 2015/5/28
+http://test.int.renrenfenqi.com/campus/crmUpOrders
+{"business_no":"143278534241541","periods":"6","first_pay":"30","info":"beizhu"}
+
+http://test.crm.renrenfenqi.com/index.php
+
+设计原型
+http://test.product.renrenfenqi.com/CRM%E5%8D%87%E7%BA%A7%E9%A1%B9%E7%9B%AE20150319/#p=订单系统
+test
+renrentest123
+
+https://tower.im/teams/eb82170a88114f7a961541aed41305a2
+
+
+
+
+git@git.renrenfenqi.com:renrenfenqi/renrenfenqi_crm.git
+
+
+
+http://honx.in/_VLT0VkQ-2njJqK_k
+
+
+
+
+				}
+
+
+
+
+ssh-keygen -t rsa -C “haiyan.xu.vip@gmail.com”
+
+ym.163.com
+
+
+
+https://tower.im/teams/eb82170a88114f7a961541aed41305a2/projects/
+
+8:55 2015/5/26
+
+10:19 2015/5/26	阅读员工手册
+
+3 days throuth documents
+
+fd5aed31c10fdc0817fe9a84ed8153343a7db376
+
+Response::view and View
+
+敏感信息高度严谨
+
+ym.163.com
+
+
+
+ZbHmi2XjKacqrjMEF4Yn
+
+
+b8aca7bdb8e78f021287ce9cda17a74f1576be42
+
+icevisual@hotmail.com
+0d:c2:34:9c:11:9a:f7:c8:15:b6:74:7f:2e:eb:f3:0f
+
+
+14:56 2015/5/25
+Read docments of laravel 4.2
+--取毕业证复印件
+王勤QQ 846409349 取离职证明
+--安装redis
