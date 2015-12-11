@@ -6,6 +6,10 @@ Xcache
 eAccelerator
 APC
 rocksdb 
+spec
+BDD
+http://www.phpspec.net/en/latest/manual/introduction.html#
+SELECT TABLE_NAME,DATA_LENGTH+INDEX_LENGTH,TABLE_ROWS FROM TABLES WHERE TABLE_SCHEMA='数据库名' AND TABLE_NAME='表名'
 
 laravel 
 多表update 与 timestamp 有冲突，问题为updated_at指向不明
