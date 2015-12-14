@@ -6,13 +6,26 @@ Xcache
 eAccelerator
 APC
 rocksdb 
-spec
+Phpspec
 BDD
+PhpStore
+YACC Parser
+
+
 http://www.phpspec.net/en/latest/manual/introduction.html#
 SELECT TABLE_NAME,DATA_LENGTH+INDEX_LENGTH,TABLE_ROWS FROM TABLES WHERE TABLE_SCHEMA='数据库名' AND TABLE_NAME='表名'
 
+67b1beb7ea47f20ab70c87e4bffd6af24fe1fdf6
+
 laravel 
 多表update 与 timestamp 有冲突，问题为updated_at指向不明
+
+
+netsh interface ip set address "本地连接" static 192.168.0.1 255.255.255.0 192.168.0.254
+
+netsh interface ip set address "本地连接" static 65.10.0.1 255.0.0.0 
+
+netsh interface ip set address name="本地连接" source=dhcp
 
 
 php5.6
