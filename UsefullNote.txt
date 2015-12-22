@@ -11,6 +11,18 @@ BDD
 PhpStore
 YACC Parser
 
+MySQL Commend Syntax 
+https://github.com/beecloud/beecloud-php
+
+#
+-- 
+/* ... */
+/*! MySQL-specific code */
+
+net view
+arp -a
+candao-PC MAC
+78-24-af-9c-93-71
 
 http://www.phpspec.net/en/latest/manual/introduction.html#
 SELECT TABLE_NAME,DATA_LENGTH+INDEX_LENGTH,TABLE_ROWS FROM TABLES WHERE TABLE_SCHEMA='数据库名' AND TABLE_NAME='表名'
@@ -49,7 +61,6 @@ namespace {
 
     sayHi();xs
 }
-
 
 Illuminate\Contracts\Console\Kernel
 
