@@ -1,0 +1,550 @@
+<?php
+require_once 'common.php';
+/**
+ * 商户请求平台参数处理
+ * @author xuchaofu
+ *	2010-03-29
+ */
+Class ReqDataUtil{
+	
+	public function getReqData($map,$funcode,$method){
+		$log = new Logger();
+		$reqData = new ReqData();
+		//对请求数据进行有效性验证,并对其进行重新组织
+		$data = $this->getData($map,$funcode);
+		//获取请求数据签名明文串
+		$plain = $this->getPlain($data);
+		//获取请求数据签名密文串
+		$sign = $this->getSign($data);
+		$log->logInfo($funcode . " method=" . $method);
+		$log->logInfo($funcode ." getReqData sign=" . $sign);
+		$log->logInfo($funcode . " getReqData plain=" . $plain);
+		//获取GET方式请求数据对象
+		if($method==method_get){
+			$url = $this->getParams($map,$funcode);
+			$reqData->setUrl($url);
+		$log->logInfo($funcode . " url=" . $url);
+		//获取POST方式请求数据对象
+		}else if($method==method_post){
+			$url = $this->getUrl($funcode);
+			$log->logInfo($funcode . " url=" . $url);
+			$reqData->setUrl($url);
+			$data->put("sign",$sign);
+			$reqData->setField($data);
+		}else{
+			die("未找到" . $method ."类型处理类");
+		}
+		$reqData->setPlain($plain);
+		$reqData->setSign($sign);
+		return $reqData;
+	}
+	
+	private function getData($map,$funcode){
+		$data = new HashMap();
+		switch($funcode){
+			case funcode_webReqPay:	//统一支付下单
+				$req = new WebReqPayData();
+				$data = $req->getData($map);
+				break;
+			case funcode_webDirectWyPay:	//网银直连下单
+				$req = new ReqWyPayData();
+				$data = $req->getData($map);
+				break;
+			case funcode_directPay :	//后台直连下单
+				$req = new DirectPayData();
+				$data = $req->getData($map);
+				break;
+			case funcode_queryTrans:	//订单查询
+				$req = new QueryTransData();
+				$data = $req->getData($map);
+				break;
+			case funcode_merCancel:	//统一支付撤销
+				$req = new MerCancelData();
+				$data = $req->getData($map);
+				break;
+			case funcode_merRefund:	//退费
+				$req = new MerRefundData();
+				$data = $req->getData($map);
+				break;
+			case funcode_transBill:	//获取交易数据对帐文件
+				$req = new TransBillData();
+				$data = $req->getData($map);
+				break;
+			case funcode_settleBill:	//获取清算数据对帐文件
+				$req = new SettleBillData();
+				$data = $req->getData($map);
+				break;
+			case funcode_microPayReq:	//微支付下单
+				$req = new WebReqPayData();
+				$data = $req->getData($map);
+				break;
+			case funcode_microPayCancel:	//微支付撤销
+				$req = new MerCancelData();
+				$data = $req->getData($map);
+				break;
+			default:
+				die("未找到对应的数据处理类");
+		}
+		return $data;
+	}
+	
+	/**
+	 * 根据功能码获取平台地址
+	 * @param $funcode
+	 */
+	private static function getUrl($funcode){
+		$url_map = StringUtil::getCompartKeyAndVal(umpay_urls);
+		return plat_url . $url_map->get($funcode);
+	}
+	
+	/**
+	 * 根据功能码获取签名明文串
+	 * @param $funcode
+	 */
+	private function getPlain($map){
+		$plain = StringUtil::getPlainByAnd($map);
+		return $plain;
+	}
+	
+	/**
+	 * 获取签名密文串
+	 * @param $map
+	 * @param $funcode
+	 */
+	private function getSign($map){
+		$plain = $this->getPlain($map);
+		$sign = SignUtil::sign($plain);
+		return $sign;
+	}	
+	
+	private function getParams($map,$funcode){
+		//对请求数据进行校验与重组
+		$reqData = $this->getData($map,$funcode);
+		//获取平台URL
+		$url = $this->getUrl($funcode);
+		//获取密文串
+		$sign = urlencode($this->getSign($reqData));
+		//获取请求参数
+		$param = StringUtil::getParameter($reqData);
+		return $url . "?" . $param . '&sign=' . $sign;
+	}
+}
+
+
+/**
+ * API请求数据包装类
+ * @author xuchaofu
+ *	2010-03-29
+ */
+Class ReqData{
+	private $url;
+	private $field;
+	private $sign;
+	private $plain;
+
+	function setUrl($url){
+		$this->url = $url;
+	}
+	
+	function setField($field){
+		$this->field = $field;
+	}
+	
+	function setSign($sign){
+		$this->sign = $sign;
+	}
+	
+	function setPlain($plain){
+		$this->plain = $plain;
+	}
+	
+	function getUrl(){
+		return $this->url;
+	}
+	
+	function getField(){
+		return $this->field;
+	}
+	
+	function getSign(){
+		return $this->sign;
+	}
+	function getPlain(){
+		return $this->plain;
+	}
+}
+
+/**
+ * 统一支付下单请求数据组织
+ * @author xuchaofu
+ * 	2010-04-01
+ */
+Class WebReqPayData{
+	public function getData($map){
+		$data = new HashMap();
+		$merId = StringUtil::trim($map->get("merId"));
+		if(""==$merId || strlen($merId)>8)die("merId为空或者长度超过限制");
+		$orderId = StringUtil::trim($map->get("orderId"));
+		if(""==$orderId || strlen($orderId)>32)die("orderId为空或者长度超过限制");
+		$merDate = StringUtil::trim($map->get("merDate"));
+		if(!DateUtil::checkData($merDate))die("merDate为空或者长度不符合要求");
+		$amount = StringUtil::trim($map->get("amount"));
+		if(""==$amount || strlen($amount)>13)die("amount为空或者长度超过限制");
+		$amtType = StringUtil::trim($map->get("amtType"));
+		if(""==$amtType || strlen($amtType)!=2)die("amtType为空或者长度不符合要求");
+		$retUrl = StringUtil::trim($map->get("retUrl"));
+		if(""==$retUrl || strlen($retUrl)>128)die("retUrl为空或者长度超过限制");
+		$version = StringUtil::trim($map->get("version"));
+		if(""==$version || strlen($version)!=3)die("version为空或者长度不符合要求");
+		$data->put("merId", $merId);
+		if(!is_null($map->get("goodsId"))){
+			$goodsId = StringUtil::trim($map->get("goodsId"));
+			if(strlen($goodsId)>8)die("goodsId长度不符合要求");
+			$data->put("goodsId", $goodsId);
+		}
+		if(!is_null($map->get("goodsInf"))){
+			$goodsInf = StringUtil::trim($map->get("goodsInf"));
+			if(strlen($goodsInf)>128)die("goodsInf长度不符合要求");
+			$data->put("goodsInf", $goodsInf);
+		}
+		if(!is_null($map->get("mobileId"))){
+			$mobileId = StringUtil::trim($map->get("mobileId"));
+			if(""!=$mobileId && strlen($mobileId)!=11)die("mobileId长度不符合要求");
+			$data->put("mobileId",$mobileId);
+		}
+		$data->put("orderId", $orderId);
+		$data->put("merDate", $merDate);
+		$data->put("amount", $amount);
+		$data->put("amtType", $amtType);	
+		if(!is_null($map->get("bankType"))){
+			$bankType = StringUtil::trim($map->get("bankType"));
+			if(strlen($bankType)>16)die("bankType长度不符合要求");
+			$data->put("bankType", $bankType);
+		}
+		if(!is_null($map->get("gateId"))){
+			$gateId = StringUtil::trim($map->get("gateId"));
+			if(strlen($gateId)>16)die("gateId长度不符合要求");
+			$data->put("gateId", $gateId);
+		}
+		$data->put("retUrl", $retUrl);
+		if(!is_null($map->get("notifyUrl"))){
+			$notifyUrl = StringUtil::trim($map->get("notifyUrl"));
+			if(strlen($notifyUrl)>128)die("notifyUrl长度不符合要求");
+			$data->put("notifyUrl", $notifyUrl);
+		}	
+		if(!is_null($map->get("merPriv"))){
+			$merPriv = StringUtil::trim($map->get("merPriv"));
+			if(strlen($merPriv)>64)die("merPriv长度不符合要求");
+			$data->put("merPriv", $merPriv);
+		}
+		if(!is_null($map->get("expand"))){
+			$expand = StringUtil::trim($map->get("expand"));
+			if(strlen($expand)>128)die("expand长度不符合要求");
+			$data->put("expand", $expand);
+		}
+		$data->put("version", $version);	
+		return $data;
+	}
+}
+/**
+ * 网银直连下单请求数据组织
+ * @author xuchaofu
+ * 	2010-04-01
+ */
+Class ReqWyPayData{
+	public function getData($map){
+		$data = new HashMap();
+		$merId = StringUtil::trim($map->get("merId"));
+		if(""==$merId || strlen($merId)>8)die("merId为空或者长度超过限制");
+		$orderId = StringUtil::trim($map->get("orderId"));
+		if(""==$orderId || strlen($orderId)>32)die("orderId为空或者长度超过限制");
+		$merDate = StringUtil::trim($map->get("merDate"));
+		if(!DateUtil::checkData($merDate))die("merDate为空或者长度不符合要求");
+		$amount = StringUtil::trim($map->get("amount"));
+		if(""==$amount || strlen($amount)>13)die("amount为空或者长度超过限制");
+		$amtType = StringUtil::trim($map->get("amtType"));
+		if(""==$amtType || strlen($amtType)!=2)die("amtType为空或者长度不符合要求");
+		$retUrl = StringUtil::trim($map->get("retUrl"));
+		if(""==$retUrl || strlen($retUrl)>128)die("retUrl为空或者长度超过限制");
+		$version = StringUtil::trim($map->get("version"));
+		if(""==$version || strlen($version)!=3)die("version为空或者长度不符合要求");
+		$data->put("merId", $merId);
+		if(!is_null($map->get("goodsId"))){
+			$goodsId = StringUtil::trim($map->get("goodsId"));
+			if(strlen($goodsId)>8)die("goodsId长度不符合要求");
+			$data->put("goodsId", $goodsId);
+		}
+		if(!is_null($map->get("goodsInf"))){
+			$goodsInf = StringUtil::trim($map->get("goodsInf"));
+			if(strlen($goodsInf)>128)die("goodsInf长度不符合要求");
+			$data->put("goodsInf", $goodsInf);
+		}
+		if(!is_null($map->get("mobileId"))){
+			$mobileId = StringUtil::trim($map->get("mobileId"));
+			if(""!=$mobileId && strlen($mobileId)!=11)die("mobileId长度不符合要求");
+			$data->put("mobileId",$mobileId);
+		}
+		$data->put("orderId", $orderId);
+		$data->put("merDate", $merDate);
+		$data->put("amount", $amount);
+		$data->put("amtType", $amtType);	
+		if(!is_null($map->get("bankType"))){
+			$bankType = StringUtil::trim($map->get("bankType"));
+			if(strlen($bankType)>16)die("bankType长度不符合要求");
+			$data->put("bankType", $bankType);
+		}
+		if(!is_null($map->get("gateId"))){
+			$gateId = StringUtil::trim($map->get("gateId"));
+			if(strlen($gateId)>16)die("gateId长度不符合要求");
+			$data->put("gateId", $gateId);
+		}
+		$data->put("retUrl", $retUrl);
+		if(!is_null($map->get("notifyUrl"))){
+			$notifyUrl = StringUtil::trim($map->get("notifyUrl"));
+			if(strlen($notifyUrl)>128)die("notifyUrl长度不符合要求");
+			$data->put("notifyUrl", $notifyUrl);
+		}	
+		if(!is_null($map->get("merPriv"))){
+			$merPriv = StringUtil::trim($map->get("merPriv"));
+			if(strlen($merPriv)>64)die("merPriv长度不符合要求");
+			$data->put("merPriv", $merPriv);
+		}
+		if(!is_null($map->get("expand"))){
+			$expand = StringUtil::trim($map->get("expand"));
+			if(strlen($expand)>128)die("expand长度不符合要求");
+			$data->put("expand", $expand);
+		}
+		$data->put("version", $version);	
+		return $data;
+	}
+}
+
+/**
+ * 后台下连下单数据组织
+ * @author xuchaofu
+ *	2010-04-01
+ */
+Class DirectPayData{
+	public function getData($map){
+		$data = new HashMap();
+		$merId = StringUtil::trim($map->get("merId"));
+		if(""==$merId || strlen($merId)>8)die("merId为空或者长度超过限制");
+		$goodsId = StringUtil::trim($map->get("goodsId"));
+		if(""==$goodsId || strlen($goodsId)>8)die("goodsId为空或者长度超过限制");
+		$mobileId = StringUtil::trim($map->get("mobileId"));
+		if(""==$mobileId || strlen($mobileId)!=11)die("mobileId为空或者长度不符合要求");
+		$orderId = StringUtil::trim($map->get("orderId"));
+		if(""==$orderId || strlen($orderId)>32)die("orderId为空或者长度超过限制");
+		$merDate = StringUtil::trim($map->get("merDate"));
+		if(!DateUtil::checkData($merDate))die("merDate为空或者长度不符合要求");
+		$amount = StringUtil::trim($map->get("amount"));
+		if(""==$amount || strlen($amount)>13)die("amount为空或者长度超过限制");
+		$amtType = StringUtil::trim($map->get("amtType"));
+		if(""==$amtType || strlen($amtType)!=2)die("amtType为空或者长度不符合要求");
+		$version = StringUtil::trim($map->get("version"));
+		if(""==$version || strlen($version)!=3)die("version为空或者长度不符合要求");
+		$data->put("merId", $merId);
+		$data->put("goodsId", $goodsId);
+		$data->put("mobileId",$mobileId);
+		$data->put("orderId", $orderId);
+		$data->put("merDate", $merDate);
+		$data->put("amount", $amount);
+		$data->put("amtType", $amtType);	
+		
+		if(!is_null($map->get("bankType"))){
+			$bankType = StringUtil::trim($map->get("bankType"));
+			if(strlen($bankType)>16)die("bankType长度不符合要求");
+			$data->put("bankType", $bankType);
+		}
+		if(!is_null($map->get("notifyUrl"))){
+			$notifyUrl = StringUtil::trim($map->get("notifyUrl"));
+			if(strlen($notifyUrl)>128)die("notifyUrl长度不符合要求");
+			$data->put("notifyUrl", $notifyUrl);
+		}	
+		if(!is_null($map->get("merPriv"))){
+			$merPriv = StringUtil::trim($map->get("merPriv"));
+			if(strlen($merPriv)>64)die("merPriv长度不符合要求");
+			$data->put("merPriv", $merPriv);
+		}
+		if(!is_null($map->get("expand"))){
+			$expand = StringUtil::trim($map->get("expand"));
+			if(strlen($expand)>128)die("expand长度不符合要求");
+			$data->put("expand", $expand);
+		}
+		$data->put("version", $version);	
+		return $data;
+	}
+}
+/**
+ * 订单查询数据组织
+ * @author xuchaofu
+ *	2010-04-01
+ */
+Class QueryTransData{
+	public function getData($map){
+		$data = new HashMap();
+		$merId = StringUtil::trim($map->get("merId"));
+		if(""==$merId || strlen($merId)>8)die("merId为空或者长度超过限制");
+		$orderId = StringUtil::trim($map->get("orderId"));
+		if(""==$orderId || strlen($orderId)>32)die("orderId为空或者长度超过限制");
+		$merDate = StringUtil::trim($map->get("merDate"));
+		if(!DateUtil::checkData($merDate))die("merDate为空或者长度不符合要求");
+		$version = StringUtil::trim($map->get("version"));
+		if(""==$version || strlen($version)!=3)die("version为空或者长度不符合要求");
+		$data->put("merId", $merId);
+		if(!is_null($map->get("goodsId"))){
+			$goodsId = StringUtil::trim($map->get("goodsId"));
+			if(strlen($goodsId)>8)die("goodsId长度不符合要求");
+			$data->put("goodsId", $goodsId);
+		}		
+		$data->put("orderId", $orderId);
+		$data->put("merDate", $merDate);
+		if(!is_null($map->get("mobileId")) ){
+			$mobileId = StringUtil::trim($map->get("mobileId"));
+			if(""!=$mobileId && strlen($mobileId)!=11)die("mobileId长度不符合要求");
+			$data->put("mobileId",$mobileId);
+		}		
+		$data->put("version", $version);	
+		return $data;
+	}
+}
+/**
+ * 撤销交易数据组织
+ * @author xuchaofu
+ *	2010-04-01
+ */
+Class MerCancelData{
+	public function getData($map){
+		$data = new HashMap();
+		$merId = StringUtil::trim($map->get("merId"));
+		if(""==$merId || strlen($merId)>8)die("merId为空或者长度超过限制");
+		$orderId = StringUtil::trim($map->get("orderId"));
+		if(""==$orderId || strlen($orderId)>32)die("orderId为空或者长度超过限制");
+		$merDate = StringUtil::trim($map->get("merDate"));
+		if(!DateUtil::checkData($merDate))die("merDate为空或者长度不符合要求");
+		$amount = StringUtil::trim($map->get("amount"));
+		if(""==$amount || strlen($amount)>13)die("amount为空或者长度超过限制");
+		$version = StringUtil::trim($map->get("version"));
+		if(""==$version || strlen($version)!=3)die("version为空或者长度不符合要求");
+		$data->put("merId", $merId);
+		$data->put("orderId", $orderId);
+		$data->put("merDate", $merDate);
+		$data->put("amount", $amount);
+		$data->put("version", $version);	
+		return $data;
+	}
+}
+/**
+ * 商户退费数据组织
+ * @author xuchaofu
+ *	2010-04-01
+ */
+Class MerRefundData{
+	public function getData($map){
+		$data = new HashMap();
+		$merId = StringUtil::trim($map->get("merId"));
+		if(""==$merId || strlen($merId)>8)die("merId为空或者长度超过限制");
+		$refundNo = StringUtil::trim($map->get("refundNo"));
+		if(""==$refundNo || strlen($refundNo)>16)die("refundNo为空或者长度超过限制");
+		$orderId = StringUtil::trim($map->get("orderId"));
+		if(""==$orderId || strlen($orderId)>32)die("orderId为空或者长度超过限制");
+		$merDate = StringUtil::trim($map->get("merDate"));
+		if(!DateUtil::checkData($merDate))die("merDate为空或者长度不符合要求");
+		$amount = StringUtil::trim($map->get("amount"));
+		if(""==$amount || strlen($amount)>13)die("amount为空或者长度超过限制");
+		$payAmount = StringUtil::trim($map->get("payAmount"));
+		if(""==$payAmount || strlen($payAmount)>13)die("payAmount为空或者长度超过限制");
+		
+		$version = StringUtil::trim($map->get("version"));
+		if(""==$version || strlen($version)!=3)die("version为空或者长度不符合要求");
+		$data->put("merId", $merId);
+		$data->put("refundNo", $refundNo);
+		$data->put("orderId", $orderId);
+		$data->put("merDate", $merDate);
+		$data->put("amount", $amount);
+		$data->put("payAmount", $payAmount);
+		$data->put("version", $version);	
+		return $data;
+	}
+}
+/**
+ * 交易数据对帐文件下载请求数据组织
+ * @author xuchaofu
+ *	2010-04-01
+ */
+Class TransBillData{
+	public function getData($map){
+		$data = new HashMap();
+		$merId = StringUtil::trim($map->get("merId"));
+		if(""==$merId || strlen($merId)>8)die("merId为空或者长度超过限制");
+		$payDate = StringUtil::trim($map->get("payDate"));
+		if(!DateUtil::checkData($payDate))die("payDate为空或者长度不符合要求");
+		$version = StringUtil::trim($map->get("version"));
+		if(""==$version || strlen($version)!=3)die("version为空或者长度不符合要求");
+		$data->put("merId", $merId);
+		$data->put("payDate", $payDate);
+		$data->put("version", $version);	
+		return $data;
+	}
+}
+/**
+ * 清算数据对帐文件下载请求数据组织
+ * @author xuchaofu
+ *	2010-04-01
+ */
+Class SettleBillData{
+	public function getData($map){
+		$data = new HashMap();
+		$merId = StringUtil::trim($map->get("merId"));
+		if(""==$merId || strlen($merId)>8)die("merId为空或者长度超过限制");
+		$settleDate = StringUtil::trim($map->get("settleDate"));
+		if(!DateUtil::checkData($settleDate))die("settleDate为空或者长度不符合要求");
+		$version = StringUtil::trim($map->get("version"));
+		if(""==$version || strlen($version)!=3)die("version为空或者长度不符合要求");
+		$data->put("merId", $merId);
+		$data->put("settleDate", $settleDate);
+		$data->put("version", $version);	
+		return $data;
+	}
+}
+
+/**
+ * 支付结果通知商户响应平台数据处理类
+ * @author xuchaofu
+ * 	2010-04-02
+ */
+Class NotifyResData{
+	/**
+	 * 3.0接口商户响应平台支付结果通知(商户到平台，直连网银)检查数据字段合法性并生成签名明文串
+	 * @param unknown_type $map
+	 * @return 签名明文串,使用|符号组织签名明文串，如：9996|100|3.0
+	 */
+	public static function getNotifyResDataPlain($map){
+		$data = new HashMap();
+		$merId = StringUtil::trim($map->get("merId"));
+		if(""==$merId || strlen($merId)>8)die("merId为空或者长度超过限制");
+		$orderId = StringUtil::trim($map->get("orderId"));
+		if(""==$orderId || strlen($orderId)>32)die("orderId为空或者长度超过限制");
+		$merDate = StringUtil::trim($map->get("merDate"));
+		if(!DateUtil::checkData($merDate))die("merDate为空或者长度不符合要求");
+		$retCode = StringUtil::trim($map->get("retCode"));
+		if(""==$retCode || strlen($retCode)!=4)die("retCode为空或者长度不符合要求");
+		$retMsg = StringUtil::trim($map->get("retMsg"));
+		if(""==$retMsg || strlen($retMsg)>128)die("retMsg为空或者长度不符合要求");
+		$version = StringUtil::trim($map->get("version"));
+		if(""==$version || strlen($version)!=3)die("version为空或者长度不符合要求");
+		$data->put("merId", $merId);
+		if(!is_null($map->get("goodsId"))){
+			$goodsId = StringUtil::trim($map->get("goodsId"));
+			if(strlen($goodsId)>8)die("goodsId长度不符合要求");
+			$data->put("goodsId", $goodsId);
+		}
+		$data->put("orderId", $orderId);
+		$data->put("merDate", $merDate);
+		$data->put("retCode", $retCode);
+		$data->put("retMsg", $retMsg);
+		$data->put("version", $version);	
+		return StringUtil::getPlainByLine($map);
+	}
+}
+?>

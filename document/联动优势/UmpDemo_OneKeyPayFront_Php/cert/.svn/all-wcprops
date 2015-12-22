@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/project-pay/!svn/ver/11368/branches/MerPay30_php_branch/cert
+END
+testUmpay.cert.pem
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/project-pay/!svn/ver/11368/branches/MerPay30_php_branch/cert/testUmpay.cert.pem
+END
+testMer.key.pem
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/project-pay/!svn/ver/11368/branches/MerPay30_php_branch/cert/testMer.key.pem
+END

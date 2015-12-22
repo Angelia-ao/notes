@@ -1,0 +1,1 @@
+http://sdkhttp.eucp.b2m.cn/sdk/SDKService?wsdl
