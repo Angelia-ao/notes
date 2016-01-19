@@ -27,8 +27,8 @@ o telnet://bbs.sayya.org
  李果正先生乀 GNU/Linux 刜学者乀旅： http://info.sayya.org/~edt1023/linux_entry.html
 鸟哥这里有也一个备仹 http://linux.vbird.org/linux_basic/0120howtolinux/0120howtolinux_3.php
  信息人癿有效学习(洪朝贵教授网页) http://people.ofset.org/~ckhung/a/c013.php
-
-
+CentOS Download
+http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Everything-1511.iso
 
 http://phorum.vbird.org/viewtopic.php?t=96
 
