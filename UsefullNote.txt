@@ -1,6 +1,11 @@
 
 
 
+
+netsh interface ip set address name="本地连接" static 10.65.10.11 255.0.0.0 10.65.10.1
+netsh interface ip set address name="本地连接" source=dhcp
+
+
 NGINX
 linux
 
@@ -149,7 +154,7 @@ adm_category
 adm_roles
 
 
-mysqldump -uroot -p adm_actions adm_actions_role  adm_admins adm_admins_options  adm_area  adm_category  adm_roles --dump-date --add-drop-table --result-file=/d/sqlLog/test/s/dump-jks.sql
+mysqldump -uroot -p -d jke_sale  adm_actions adm_actions_role  adm_admins adm_admins_options  adm_area  adm_category  adm_roles --dump-date --add-drop-table --result-file=/d/sqlLog/test/s/dump-jks.sql
 
 
 mysqldump -uroot -p -d xb28 --tabels xb_*  --dump-date --add-drop-table --result-file=D:\dump.sql
