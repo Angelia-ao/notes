@@ -1,0 +1,156 @@
+在MySQL存储过程的语句中有三个标准的循环方式：WHILE循环，LOOP循环以及REPEAT循环。还有一种非标准的循环方式：GOTO，不过这种循环方式最好别用，很容易引起程序的混乱，在这里就不错具体介绍了。
+这几个循环语句的格式如下：
+WHILE……DO……END WHILE
+REPEAT……UNTIL END REPEAT
+LOOP……END LOOP
+GOTO。
+ 
+    下面首先使用第一种循环编写一个例子。
+mysql> create procedure pro10()
+    -> begin
+    -> declare i int;
+    -> set i=0;
+    -> while i<5 do
+    ->     insert into t1(filed) values(i);
+    ->     set i=i+1;
+    -> end while;
+    -> end;//
+Query OK, 0 rows affected (0.00 sec)
+    在这个例子中，INSERT和SET语句在WHILE和END WHILE之间，当变量i大于等于5的时候就退出循环。使用set i=0；语句是为了防止一个常见的错误，如果没有初始化，i默认变量值为NULL，而NULL和任何值操作的结果都是NULL。
+    执行一下这个存储过程并产看一下执行结果：
+mysql> delete from t1//
+Query OK, 0 rows affected (0.00 sec)
+mysql> call pro10()//
+Query OK, 1 row affected (0.00 sec)
+mysql> select * from t1//
++——-+
+| filed |
++——-+
+|     0 |
+|     1 |
+|     2 |
+|     3 |
+|     4 |
++——-+
+5 rows in set (0.00 sec)
+    以上就是执行结果，有5行数据插入到数据库中，证明存储过程编写正确无误^_^。
+    再来看一下第二个循环控制指令 REPEAT……END REPEAT。使用REPEAT循环控制语句编写下面这个存储过程：
+mysql> create procedure pro11()
+    -> begin
+    -> declare i int default 0;
+    -> repeat
+    ->     insert into t1(filed) values(i);
+    ->     set i=i+1;
+    ->     until i>=5
+    -> end repeat;
+    -> end;//
+Query OK, 0 rows affected (0.00 sec)
+    这个REPEAT循环的功能和前面WHILE循环一样，区别在于它的执行后检查是否满足循环条件（until i>=5），而WHILE则是执行前检查（while i<5 do）。
+    不过要注意until i>=5后面不要加分号，如果加分号，就是提示语法错误。
+    编写完成后，调用一下这个存储过程，并查看结果：
+mysql> delete from t1//
+Query OK, 5 rows affected (0.00 sec)
+mysql> call pro11()//
+Query OK, 1 row affected (0.00 sec) #虽然在这里显示只有一行数据受到影响，但是下面选择数据的话，还是插入了5行数据。
+mysql> select * from t1//
++——-+
+| filed |
++——-+
+|     0 |
+|     1 |
+|     2 |
+|     3 |
+|     4 |
++——-+
+5 rows in set (0.00 sec)
+一行就是执行结果，实际的作用和使用while编写的存储过程一样，都是插入5行数据。
+再来看一下第三个循环控制语句LOOP……END LOOP。编写一个存储过程程序如下：
+mysql> create procedure pro12()
+    -> begin
+    -> declare i int default 0;
+    -> loop_label: loop
+
+    ->     insert into t1(filed) values(i);
+    ->     set i=i+1;
+    ->     if i>=5 then
+    ->         leave loop_label;
+    ->     end if;
+    -> end loop;
+    -> end;//
+Query OK, 0 rows affected (0.00 sec)
+从上面这个例子可以看出，使用LOOP编写同样的循环控制语句要比使用while和repeat编写的要复杂一些：在循环内部加入了IF……END IF语句，在IF语句中又加入了LEAVE语句，LEAVE语句的意思是离开循环，LEAVE的格式是：LEAVE 循环标号。
+    编写完存储过程程序后，来执行并查看一下运行结果：
+mysql> delete from t1//
+Query OK, 5 rows affected (0.00 sec)
+ 
+mysql> call pro12//
+Query OK, 1 row affected (0.00 sec) #虽然说只有一行数据受影响，但是实际上是插入了5行数据。
+mysql> select * from t1//
++——-+
+| filed |
++——-+
+|     0 |
+|     1 |
+|     2 |
+|     3 |
+|     4 |
++——-+
+5 rows in set (0.00 sec)
+    执行结果和使用WHILE、LOOP编写的循环一样，都是往标中插入5行值。
+   Labels   标号和 END Labels 结束标号
+   在使用loop的时候，使用到的labels标号，对于labels可以用到while，loop，rrepeat等循环控制语句中。而且有必要好好认识一下lables!！
+mysql> create procedure pro13()
+    -> label_1:begin
+    -> label_2:while 0=1 do leave label_2;end while;
+    -> label_3:repeat leave label_3;until 0=0 end repeat;
+    -> label_4:loop leave label_4;end loop;
+    -> end;//
+Query OK, 0 rows affected (0.00 sec)
+    上面这里例子显示了可以在BEGIN、WHILE、REPEAT或者LOOP语句前使用语句标号，语句标号 只能在合法的语句前使用，所以LEAVE label_3意味着离开语句标号名为label_3的语句或符合语句。
+    其实，也可以使用END labels来表示标号结束符。
+mysql> create procedure pro14()
+    -> label_1:begin
+    -> label_2:while 0=1 do leave label_2;end while label_2;
+    -> label_3:repeat leave label_3;until 0=0 end repeat label_3;
+    -> label_4:loop leave label_4;end loop label_4;
+    -> end label_1;//
+Query OK, 0 rows affected (0.00 sec)
+    上面就是使用了标号结束符，其实这个结束标号并不是十分有用，而且他必须和开始定义的标号名字一样，否则就会报错。如果要养成一个良好的编程习惯方便他人阅读的话，可以使用这个标号结束符。
+ITERATE 迭代        
+     如果是在ITERATE语句，即迭代语句中的话，就必须使用LEAVE语句。ITERATE只能出现在LOOP，REPEAT和WHILE语句中，它的意思是“再次循环”，例如：
+mysql> create procedure pro15()
+
+    -> begin
+    -> declare i int default 0;
+    -> loop_label:loop
+    ->     if i=3 then
+    ->         set i=i+1;
+    ->         iterate loop_label;
+    ->     end if;
+    ->     insert into t1(filed) values(i);
+    ->     set i=i+1;
+    ->     if i>=5 then
+    ->        leave loop_label;
+    ->     end if;
+    ->   end loop;
+    -> end;//
+Query OK, 0 rows affected (0.00 sec)
+    iterate语句和leave语句一样，也是在循环内部使用，它有点类似于C/C++语言中的continue。
+    那么这个存储程序是怎么运行的的？首先i的值为0，条件判断语句if i=3 then判断为假，跳过if语段，向数据库中插入0，然后i+1，同样后面的if i>=5 then判断也为假，也跳过；继续循环，同样插入1和2；在i=3的时候条件判断语句if i=3 then判断为真，执行i=i+1，i值为4，然后执行迭代iterate loop_label;，即语句执行到iterate loop_label;后直接跳到if i=3 then判断语句，执行判断，这个时候由于i=4，if i=3 then判断为假，跳过IF语段，将4添加到表中，i变为5，条件判断if i>=5 then判断为真，执行leave loop_label;跳出loop循环，然后执行end;//，结束整个存储过程。
+    综上所述，数据库中将插入数值：0,1,2,4。执行存储过程，并查看结果：|
+mysql> delete from t1//
+Query OK, 5 rows affected (0.00 sec)
+ 
+mysql> call pro15//
+Query OK, 1 row affected (0.00 sec)
+mysql> select * from t1//
++——-+
+| filed |
++——-+
+|     0 |
+|     1 |
+|     2 |
+|     4 |
++——-+
+4 rows in set (0.00 sec)
+和我们上面分析的结果一样，只插入了数值0,1,2,4。
