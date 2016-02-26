@@ -1,0 +1,123 @@
+
+
+
+
+
+
+1. cocos new -l js project_name
+2. cc.LoaderScence.preload(g_resource,function(){
+    cc.direct.runScene(new HelloWorldScene());
+},this)
+
+var HelloWOrldScene = cc.Scene.extend({
+    onEnter : function(){
+        this._super();
+        var layer = new HelloWorldLayer();
+        this.addChild(layer);
+
+    }
+});
+
+var layer = new cc.Layer();
+var layerColor = new cc.LayerColor(cc.color(255,0,0),100,100);
+var layerGradient = new cc.LayerGradient(cc.color(255,0,0),cc.color(255,0,0));
+var sprite = new cc.Sprite(url);
+cc.director.runScene(new cc.TransitionSlideInT(2,new SecondScene()));
+
+pushScene
+popScene
+runScene
+cc.director.getWinSize()
+cc.director.getVisibleSize()
+cc.director.getSchedule()
+cc.director.pause() / resume()
+
+new cc.MenuItemImage(
+    res.CloseNormal_png,
+    res.CloseSelected_png,
+    this.closeClicked,this / this.closeClicked.bind(this)
+);
+
+this.bg = new cc.DrawNode();
+
+this.scheduleUpdate();
+update:function(){
+    ...
+}
+
+this.bg.drawDot(new cc.Point(this.ball.x,this.ball.y),2,cc.color(255,0,0));
+
+基本动作
+
+moveTo / moveBy 移动到 移动量
+var action = cc.moveTo(2,cc.p(size.width/2,size.height/2));
+scaleTo / scaleBy 放缩到 放缩至 
+var action2 =  cc.scaleTo(1,2,2);
+fadeTo / fadeIn / fadeInOut 淡入淡出
+var action4 =  cc.fadeIn(2);
+blink  闪烁
+var action = cc.blink(2,10); 
+tintTo  色调变化
+var action6 =  cc.tintTo(0.3,100,0,0);
+
+delayTime 延迟
+RotateTo / rotateBy 对接点旋转
+SkewTo / SkewBy 对节点做倾斜变化
+JumpTo / JumpBy 让节点跳跃移动
+BezierTo / BezierBy 让节点沿着贝塞尔曲线移动
+
+组合动作
+
+cc.sequence() 顺序
+repeat 重复
+repeatForever 无限重复
+spawn 同时执行
+reverseTime / reverse 反向
+
+reverse v3.1只支持xxxBy方法
+
+var reverseTime = cc.reverseTime(action);
+var reverse = action.reverse()
+运动轨迹
+reverse.easing(cc.easeIn(2));
+easeIn easeOut easeInOut
+easeCubicActionIn/Out/Iuout
+easeBackIn/Out/InOut
+easeElasticIn/Out/InOut
+
+node.stopAction(action);
+node.stopActionByTag(actionTag);
+node.stopAllAction();
+
+node.pause();
+node.resume();
+
+监听动作的开始与结束
+var callback = cc.callFunc(this.callback,this,"message");
+
+callback : function(nodeExectingAction.data){
+    ...
+}
+
+cc.sequence(action,callback,action1);
+
+声音
+cc.audioEngine.playMusic("res/sounds/bg.mp3",true);//是否重复
+cc.audioEngine.stopMusic();
+var effect = c.audioEngine.playEffect("res/sounds/eat.mp3",false);
+cc.audioEngine.stopEffect(effect);
+cc.audioEngine.stopAllEffects();
+
+cc.audioEngine.setEffectVolume(0 ~ 1);
+cc.audioENgine.setMusicVolume(0 ~ 1);
+
+事件
+
+
+
+
+
+
+
+
+

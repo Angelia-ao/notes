@@ -2,6 +2,31 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+xdebug
+phpunit
+
+
+nginx 显示文件目录
+
+在nginx.conf文件中的http 里加入 
+
+autoindex on;# 显示目录
+autoindex_exact_size on;# 显示文件大小
+autoindex_localtime on;# 显示文件时间
+
+
+netsh interface ip set address name="本地连接" static 192.168.5.23 255.255.255.0 192.168.5.1
+
 netsh interface ip set address name="本地连接" static 10.65.10.11 255.0.0.0 10.65.10.1
 netsh interface ip set address name="本地连接" source=dhcp
 
