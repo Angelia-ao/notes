@@ -2,14 +2,12 @@
 
 
 
-
-
-1. cocos new -l js project_name
-2. cc.LoaderScence.preload(g_resource,function(){
+cocos new -l js project_name
+cc.LoaderScence.preload(g_resource,function(){
     cc.direct.runScene(new HelloWorldScene());
 },this)
 
-var HelloWOrldScene = cc.Scene.extend({
+var HelloWorldScene = cc.Scene.extend({
     onEnter : function(){
         this._super();
         var layer = new HelloWorldLayer();
@@ -112,6 +110,179 @@ cc.audioEngine.setEffectVolume(0 ~ 1);
 cc.audioENgine.setMusicVolume(0 ~ 1);
 
 事件
+
+if('mouse' in cc.sys.capabilities){
+    cc.eventManager.addListener({
+        event:cc.EventListener.MOUSE,
+        onMouseDown:function(event){
+            var pos = event.getLocation();
+            var target = event.getCurrentTarget();
+        },
+        onMouseUp:function(event){
+        },
+        onMouseMove:function(event){
+        }
+    },this);
+}
+
+
+cc.EventListener.TOUCH_ONE_BY_ONE,
+
+onTouchBegan
+onTouchMoved:function(touch,event){
+    var pos = touch.getLocation();
+    var id = touch.getID();
+    var target = touch.getCurrentTarget();
+}
+onTouchEnded:function(touch,event){
+onTouchCanceled:function(touch,event){
+
+cc.EventListener.TOUCH_ALL_AT_ONCE,
+    event:cc.EventListener.KEYBOARD,
+cc.eventManager.addListener({
+    event:cc.EventListener.KEYBOARD,
+    onKeyReleased:function(keyCode,event){
+        if(keyCode == cc.KEY.back){
+            trace("key Code " + keyCode);
+            cc.director.end();
+        }else if(keyCode == cc.KEY.z){
+            trace("key Code " + keyCode);
+        }
+    },
+    onKeyPressed:function(keyCode,event){
+
+    }
+},this);
+
+event:cc.EventListener.ACCELERATION,
+callback
+
+休息进入后台
+cc.eventManager.addCustomListener(cc.game.EVENT_HIDE,function(){
+    trace('Game Hide');
+});
+cc.eventManager.addCustomListener(cc.game.EVENT_SHOW,function(){
+    trace('Game Show');
+
+});
+
+
+定时器
+
+node.scheduleOnce(callback,delay_seconds);
+
+node.schedule(callback,interval,repeat,delay);
+
+repeat + 1
+
+cc.REPEAT_FOREVER
+
+node.scheduleUpdate / node.unscheduleUpdate
+node.schedule node.scheduleOnce / node.unschedule
+
+
+schedule2 :function(callback,interval){
+    var then = Date.now();
+    interval *= 1000;
+    this.schedule(function(){
+        var now = Date.now();
+        var delta = now - then ;
+        if(delta > interval){
+            then = now - (delta % interval);
+            callback.call(this);
+        }
+    }.bind(this),0);
+}
+
+按钮
+MenuItemSprite
+
+        var spriteNormal= new cc.Sprite(res.startgame_png);
+        var spriteSelected = new cc.Sprite(res.startgame2_png);
+        var spriteDisabled = new cc.Sprite(res.startgame3_png);
+
+        var menuSprite = new cc.MenuItemSprite(spriteNormal,spriteSelected,spriteDisabled,this.startgame,this);
+        var menu = new cc.Menu(menuSprite);
+        this.addChild(menu);
+        item.setEnabled(true);
+
+
+MenuItemImage 
+MenuItemFont    new cc.MenuItemFont(text,clickHandler,target);
+MenuItemLabel   new cc.MenuItemLabel(label,clickHandler,target);
+
+        var label = new cc.LabelTTF("START GAME","Arial",32);
+        var item = new cc.MenuItemLabel(label,this.startgame,this);
+
+MenuItemToggle(menu,menu1,this.callback,target)
+
+菜单排列
+
+menu.alignItemsVertically(); 纵向排列
+menu.alignItemsHorizontally(); 横向排列
+menu.alignItemsHorizontallyWithPadding(20)
+
+new cc.LabelTTF(text,font,fontSize,hAlign,wALign);
+        
+        var aboutText = new cc.LabelTTF('About this game \n...','Arial',20,cc.size(350,200),cc.TEXT_ALIGNMENT_LEFT,cc.VERTICALTEXT_ALIGNMENT_TOP);
+        aboutText.x = size.width / 2;
+        aboutText.y = size.height / 2;
+        this.addChild(aboutText);
+
+
+localStorage
+
+cc.sys.localStorage.getItem(key); / setItem(key,value)
+
+打包指令
+
+cocos compile -p web/ad/ios -m release/debug -adveanced
+
+TexturePacker
+
+cc.spriteFrameCache.addSpriteFrames("res/candy.plist");
+
+new cc.Sprite("#1.png");
+
+note : load resource in resource.js
+
+分批处理
+
+new cc.SpriteBatchNode(url);
+
+batch.addChild
+缓存池
+cc.pool.hasObject(ReuseSprite)
+cc.pool.putInPool(ball);
+cc.pool.getFromPool(ReuseSprite,param);
+位图缓存
+BakeLayer
+
+layer.bake();
+
+At 2016-02-26 15:38:22 整理cocos
+
+
+动态背景
+
+视差滚动背景
+
+ParallaxNode
+var parallax = new cc.parallaxNode();
+parallax.addChild(bgLayer,z-index,ratio,offset);
+ bg.addChild(bg4,4,cc.p(1,0),cc.p(bg4.width/2,bg4.height/2));
+
+
+
+
+
+
+
+
+
+
+
+http://onebyonedesign.com/flash/particleeditor/
 
 
 
