@@ -276,12 +276,12 @@ parallax.addChild(bgLayer,z-index,ratio,offset);
 
 
 
+https://github.com/kenkozheng
+
+https://github.com/tonyguan
 
 
-
-
-
-
+--particleeditor
 http://onebyonedesign.com/flash/particleeditor/
 
 

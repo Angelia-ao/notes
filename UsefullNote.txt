@@ -1,5 +1,47 @@
 
 
+mysql 查询 对大小写铭感
+
+  CREATE TABLE NAME(
+          name VARCHAR(10) BINARY
+        );
+
+        
+  `account` varchar(30) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '企业账号',
+
+
+
+php-cgi msc 110 错误
+安装 vs2012 86 和 64
+
+
+
+//压缩率最低
+$gzencode = gzencode($str,9);
+echo "gzencode".strlen($gzencode)."/n";
+
+//压缩率居中
+$gzcompress = gzcompress($str,9);
+echo "gzcompress".strlen($gzcompress)."/n";
+
+//压缩率并列最高
+$gzdeflate = gzdeflate($str,9);
+echo "gzdeflate".strlen($gzdeflate)."/n";
+
+//压缩率并列最高
+$bzcompress = bzcompress($str,9);
+echo "bzcompress".strlen($gzdeflate)."/n";
+
+
+SHOW ENGINE INNODB STATUS 
+
+deadlock
+
+SQLSTATE[40001]:Serialization failure
+1213 Deadlock found when tring to get lock
+
+
+
 
 // $model->paginate(15)->toArray()
 // array:9 [▼
@@ -16,7 +58,7 @@
 
 
 
-
+导出部分GIT内容
 
 
 svn ls https://github.com/foobar/Test.git/trunk/foo
